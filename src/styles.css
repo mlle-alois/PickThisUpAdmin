@@ -1,1 +1,92 @@
-/* You can add global styles to this file, and also import other style files */
+.center {
+  text-align: center;
+}
+
+.logo-div {
+  float: left;
+  background: url(assets/pickThisUpLogo.PNG) no-repeat top;
+  background-size: 135px;
+  width: 135px;
+  height: 135px;
+  margin-right: 20px;
+}
+
+.jumbotron {
+  height: 71px;
+  background-size: cover;
+  border-radius: 0;
+  margin-bottom: 0;
+  background-color: #F5F5F5;
+}
+
+.jumbotron h1 {
+  font-size: 2.5rem;
+  color: #474545;
+  font-weight: bold;
+}
+
+.icon {
+  width: 35px;
+  float: left;
+  margin-left: 15px;
+  margin-right: 15px;
+}
+
+.list-icon {
+  width: 200px;
+  float: left;
+  margin-left: 15px;
+  margin-right: 15px;
+}
+
+.bold-text {
+  font-weight: bold;
+}
+
+.card-picture {
+  float: left;
+  height: 180px;
+  margin-right: 15px;
+}
+
+.profile-picture {
+  height: 180px;
+  margin: 15px;
+}
+
+.home-menu {
+  background-color: #7CCA6C;
+}
+
+.menu-item {
+  font-size: 12px;
+}
+
+.help-block {
+  color: red
+}
+
+.p-datepicker {
+  overflow: visible;
+}
+
+.p-datepicker table td > span {
+  width: 20px;
+  height: 20px;
+}
+
+.action-button {
+  width: 75px !important;
+  height: 75px !important;
+  font-size: 10px;
+  margin: 10px;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
