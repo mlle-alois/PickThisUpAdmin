@@ -31,6 +31,7 @@ import {ConfirmationService, MessageService} from "primeng/api";
 import {TabViewModule} from 'primeng/tabview';
 import { UpdateEventComponent } from './components/update-event/update-event.component';
 import {ProgressSpinnerModule} from "primeng/progressspinner";
+import {EventComponent} from "./components/event/event.component";
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import {ProgressSpinnerModule} from "primeng/progressspinner";
     MenuComponent,
     UsersComponent,
     ZonesComponent,
-    UpdateEventComponent
+    UpdateEventComponent,
+    EventComponent
   ],
   imports: [
     BrowserModule,

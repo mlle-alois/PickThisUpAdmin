@@ -31,6 +31,7 @@ export class EventService {
   async getParticipantsEvents(eventId: number): Promise<UserModel[]> {
     return await this.httpService.getAll<UserModel>(config.URL + '/event/getParticipants/' + eventId);
   }
+
   async getPastEventsFromUser(): Promise<EventModel[]> {
     return (await this.httpService.getAll<EventModel>(config.URL + '/event/getPastEventsByUser')).map(function (event) {
       event.dateHourStart = new MyDate(event.dateHourStart);
@@ -48,6 +49,34 @@ export class EventService {
       return event;
     });
   }
+
+  async getRefusedEvents(): Promise<EventModel[]> {
+    return (await this.httpService.getAll<EventModel>(config.URL + '/event/getRefusedEvents')).map(function (event) {
+      event.dateHourStart = new MyDate(event.dateHourStart);
+      event.dateHourEnd = new MyDate(event.dateHourEnd);
+      event.dateHourCreation = new MyDate(event.dateHourCreation);
+      return event;
+    });
+  }
+
+  async getValidatedEvents(): Promise<EventModel[]> {
+    return (await this.httpService.getAll<EventModel>(config.URL + '/event/getValidatedEvents')).map(function (event) {
+      event.dateHourStart = new MyDate(event.dateHourStart);
+      event.dateHourEnd = new MyDate(event.dateHourEnd);
+      event.dateHourCreation = new MyDate(event.dateHourCreation);
+      return event;
+    });
+  }
+
+  async getWaitingEvents(): Promise<EventModel[]> {
+    return (await this.httpService.getAll<EventModel>(config.URL + '/event/getWaitingEvents')).map(function (event) {
+      event.dateHourStart = new MyDate(event.dateHourStart);
+      event.dateHourEnd = new MyDate(event.dateHourEnd);
+      event.dateHourCreation = new MyDate(event.dateHourCreation);
+      return event;
+    });
+  }
+
   async getCurrentEventsFromUser(): Promise<EventModel[]> {
     return (await this.httpService.getAll<EventModel>(config.URL + '/event/getActualEventsByUser')).map(function (event) {
       event.dateHourStart = new MyDate(event.dateHourStart);
