@@ -1,6 +1,8 @@
 import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {AuthenticatedUserService} from "../services/authenticated-user.service";
+import {UserModel} from "../models/user.model";
+import {UserType} from "../enum/user-type";
 
 @Component({
   selector: 'app-root',
@@ -10,6 +12,7 @@ import {AuthenticatedUserService} from "../services/authenticated-user.service";
 export class AppComponent implements AfterViewInit, OnInit {
 
   token: string;
+  currentUser: UserModel;
 
   constructor(private router: Router, private route: ActivatedRoute, private authenticatedUserService: AuthenticatedUserService) {
   }
@@ -17,6 +20,10 @@ export class AppComponent implements AfterViewInit, OnInit {
   async ngOnInit() {
     this.initToken();
     await this.initCurrentUser();
+    this.currentUser = await this.authenticatedUserService.getCurrentUser();
+    if(this.currentUser.typeId === UserType.BlockedUser || this.currentUser.typeId === UserType.User) {
+      this.authenticatedUserService.redirectToAuthentication();
+    }
   }
 
   ngAfterViewInit() {

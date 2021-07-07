@@ -8,11 +8,11 @@ import {UserService} from "../../../services/user.service";
 
 @Component({
   selector: 'app-my-space',
-  templateUrl: './my-space.component.html',
-  styleUrls: ['./my-space.component.css']
+  templateUrl: './users.component.html',
+  styleUrls: ['./users.component.css']
 })
 
-export class MySpaceComponent implements OnInit, AfterViewInit {
+export class UsersComponent implements OnInit, AfterViewInit {
   token: string;
   currentUser: UserModel;
 

@@ -1,9 +1,0 @@
-<div *ngIf="currentUser && currentUser.typeId !== BLOCKED_USER_USER_TYPE_ID" style="text-align: right">
-  <button pButton type="button" title="Signaler un lieu" icon="pi pi-bell"
-          class="p-button-rounded p-button-danger action-button" (click)="onIsSignalZoneClicked()"></button>
-  <button pButton type="button" title="Créer un événement" icon="pi pi-plus"
-          class="p-button-rounded p-button-success action-button" (click)="onIsAddEventClicked()"></button>
-</div>
-
-<app-signal-zone *ngIf="isSignalZoneClicked" [isSignalZoneClicked]="isSignalZoneClicked" (isSignalZoneClickedChange)="isSignalZoneClicked = $event"></app-signal-zone>
-<app-add-event *ngIf="isAddEventClicked" [isAddEventClicked]="isAddEventClicked" (isAddEventClickedChange)="isAddEventClicked = $event"></app-add-event>

@@ -17,13 +17,9 @@ import {MenubarModule} from "primeng/menubar";
 import {CardModule} from "primeng/card";
 import {DialogModule} from 'primeng/dialog';
 import {TableModule} from "primeng/table";
-import {ActionButtonsComponent} from './components/action-buttons/action-buttons.component';
-import {MySpaceComponent} from './components/my-space/my-space.component';
-import {MyZonesComponent} from './components/my-zones/my-zones.component';
+import {UsersComponent} from './components/users/users.component';
 import {ZonesComponent} from './components/zones/zones.component';
 import {GalleriaModule} from "primeng/galleria";
-import {AddEventComponent} from './components/add-event/add-event.component';
-import {SignalZoneComponent} from './components/signal-zone/signal-zone.component';
 import {AutoCompleteModule} from "primeng/autocomplete";
 import {FileUploadModule} from "primeng/fileupload";
 import {ToastModule} from "primeng/toast";
@@ -34,7 +30,6 @@ import {ConfirmPopupModule} from "primeng/confirmpopup";
 import {ConfirmationService, MessageService} from "primeng/api";
 import {TabViewModule} from 'primeng/tabview';
 import { UpdateEventComponent } from './components/update-event/update-event.component';
-import { MyEventComponent } from './components/my-event/my-event.component';
 import {ProgressSpinnerModule} from "primeng/progressspinner";
 
 @NgModule({
@@ -44,14 +39,9 @@ import {ProgressSpinnerModule} from "primeng/progressspinner";
     FooterComponent,
     HomeComponent,
     MenuComponent,
-    ActionButtonsComponent,
-    MySpaceComponent,
-    MyZonesComponent,
+    UsersComponent,
     ZonesComponent,
-    AddEventComponent,
-    SignalZoneComponent,
-    UpdateEventComponent,
-    MyEventComponent
+    UpdateEventComponent
   ],
   imports: [
     BrowserModule,
