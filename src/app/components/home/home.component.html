@@ -2,15 +2,6 @@
 <p-progressSpinner *ngIf="!isLoadedData"></p-progressSpinner>
 <!-- region Evénements-->
 <p-tabView *ngIf="isLoadedData">
-  <p-tabPanel header="Validés">
-    <div *ngIf="validatedEvents.length === 0" style="text-align: center"><p>Il n'y a aucun événement validés.</p>
-    </div>
-    <div *ngFor="let event of validatedEvents">
-      <app-my-event [event]="event" (isEventsHasChanged)="initEvents()" [currentUser]="currentUser"></app-my-event>
-      <br/>
-    </div>
-    <!-- endregion-->
-  </p-tabPanel>
   <p-tabPanel header="En attente">
     <div *ngIf="waitingEvents.length === 0" style="text-align: center"><p>Il n'y a aucun événement en attente.</p>
     </div>
@@ -18,7 +9,14 @@
       <app-my-event [event]="event" (isEventsHasChanged)="initEvents()" [currentUser]="currentUser"></app-my-event>
       <br/>
     </div>
-    <!-- endregion-->
+  </p-tabPanel>
+  <p-tabPanel header="Validés">
+    <div *ngIf="validatedEvents.length === 0" style="text-align: center"><p>Il n'y a aucun événement validés.</p>
+    </div>
+    <div *ngFor="let event of validatedEvents">
+      <app-my-event [event]="event" (isEventsHasChanged)="initEvents()" [currentUser]="currentUser"></app-my-event>
+      <br/>
+    </div>
   </p-tabPanel>
 
   <p-tabPanel header="Refusés">
@@ -28,6 +26,6 @@
       <app-my-event [event]="event" (isEventsHasChanged)="initEvents()" [currentUser]="currentUser"></app-my-event>
       <br/>
     </div>
-    <!-- endregion-->
   </p-tabPanel>
 </p-tabView>
+<!-- endregion-->
