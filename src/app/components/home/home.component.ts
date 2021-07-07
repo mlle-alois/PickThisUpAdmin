@@ -6,7 +6,6 @@ import {MyDate} from "../../../utils/MyDate";
 import {AuthenticatedUserService} from "../../../services/authenticated-user.service";
 import {EventService} from "../../../services/event.service";
 import {DateUtils} from "../../../utils/DateUtils";
-import {status} from "../../../enum/status";
 
 @Component({
   selector: 'app-home',

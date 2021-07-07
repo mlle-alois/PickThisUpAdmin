@@ -1,0 +1,69 @@
+<p-toast></p-toast>
+<p-confirmPopup></p-confirmPopup>
+<p-card header="Signalement à {{zone.zoneCity.toUpperCase()}}"
+        subheader="Signalement à {{zone.zoneCity}}, il faut créer un événement pour ce lieu !"
+        styleClass="p-card-shadow">
+  <div>
+    <img src="assets/map-marker-alt-solid.svg" alt="" class="icon"/>
+    <p class="bold-text">{{zone.zoneStreet}} <br/>{{zone.zoneCity}} {{zone.zoneZipcode}}</p>
+  </div>
+  <p style="font-size: 16px;">Niveau de pollution : {{zone.pollutionLevel.pollutionLevelLibelle}}</p>
+  <ng-template pTemplate="footer">
+    <p-button label="Détails" icon="pi pi-plus" styleClass="p-button-warning"
+              (click)="onZoneDetailClicked(zone)"></p-button>
+    <p-button label="Accepter" icon="pi pi-check" styleClass="p-button-success"
+              *ngIf="zone.statusId === 5"
+              (click)="onZoneAcceptClicked(zone, $event)"></p-button>
+    <p-button label="Refuser" icon="pi pi-times" styleClass="p-button-danger"
+              *ngIf="zone.statusId === 5"
+              (click)="onZoneRefuseClicked(zone, $event)"></p-button>
+  </ng-template>
+</p-card>
+
+<!-- region Détails Zone-->
+<p-dialog *ngIf="visibleZone" [(visible)]="isZoneDetailVisible"
+          header="Détails de l'événement à {{visibleZone.zoneCity}}"
+          [style]="{width: '60vw'}">
+  <div>
+    <div>
+      <div style="float: left; width: 50%">
+        <p>Organisé par : <span class="bold-text">{{visibleZone.signalmanId}}</span></p>
+        <p style="font-size: 12px;">Niveau de pollution : {{visibleZone.pollutionLevel.pollutionLevelLibelle}}</p>
+        <div>
+          <img src="assets/map-marker-alt-solid.svg" alt="" class="icon"/>
+          <p class="bold-text">
+            {{visibleZone.zoneStreet}} <br/>
+            {{visibleZone.zoneCity}} {{visibleZone.zoneZipcode}}<br/>
+            <span style="font-size: 11px">{{visibleZone.zoneDescription}}</span>
+          </p>
+        </div>
+      </div>
+      <div *ngIf="zonePictures && zonePictures.length > 0">
+        <p-galleria [value]="zonePictures" [responsiveOptions]="responsiveOptions"
+                    [containerStyle]="{'max-width': '100%'}"
+                    [numVisible]="5"
+                    [circular]="true" [showItemNavigators]="true">
+          <ng-template pTemplate="item" let-item>
+            <img src="assets/pictures/{{item.mediaPath}}" alt="{{visibleZone.zoneCity}} image"
+                 style="width: 100%; display: block;"/>
+          </ng-template>
+          <ng-template pTemplate="thumbnail" let-item>
+            <div class="p-grid p-nogutter p-justify-center">
+              <img src="assets/pictures/{{item.mediaPath}}" alt="{{visibleZone.zoneCity}} image"
+                   style="display: block;width: 45px"/>
+            </div>
+          </ng-template>
+        </p-galleria>
+      </div>
+    </div>
+  </div>
+  <ng-template pTemplate="footer">
+    <p-button label="Accepter" icon="pi pi-check" styleClass="p-button-success"
+              *ngIf="zone.statusId === 5"
+              (click)="onZoneAcceptClicked(zone, $event)"></p-button>
+    <p-button label="Refuser" icon="pi pi-times" styleClass="p-button-danger"
+              *ngIf="zone.statusId === 5"
+              (click)="onZoneRefuseClicked(zone, $event)"></p-button>
+  </ng-template>
+</p-dialog>
+<!-- endregion-->

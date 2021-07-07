@@ -1,31 +1,33 @@
 <p-toast></p-toast>
 <p-progressSpinner *ngIf="!isLoadedData"></p-progressSpinner>
-<!-- region Evénements-->
-<p-tabView *ngIf="isLoadedData">
-  <p-tabPanel header="En attente">
-    <div *ngIf="waitingEvents.length === 0" style="text-align: center"><p>Il n'y a aucun événement en attente.</p>
-    </div>
-    <div *ngFor="let event of waitingEvents">
-      <app-my-event [event]="event" (isEventsHasChanged)="initEvents()" [currentUser]="currentUser"></app-my-event>
-      <br/>
-    </div>
-  </p-tabPanel>
-  <p-tabPanel header="Validés">
-    <div *ngIf="validatedEvents.length === 0" style="text-align: center"><p>Il n'y a aucun événement validés.</p>
-    </div>
-    <div *ngFor="let event of validatedEvents">
-      <app-my-event [event]="event" (isEventsHasChanged)="initEvents()" [currentUser]="currentUser"></app-my-event>
-      <br/>
-    </div>
-  </p-tabPanel>
+<div *ngIf="isLoadedData">
+  <!-- region Evénements-->
+  <p-tabView>
+    <p-tabPanel header="Evenements en attente">
+      <div *ngIf="waitingEvents.length === 0" style="text-align: center"><p>Il n'y a aucun événement en attente.</p>
+      </div>
+      <div *ngFor="let event of waitingEvents">
+        <app-event [event]="event" (isEventsHasChanged)="initEvents()" [currentUser]="currentUser"></app-event>
+        <br/>
+      </div>
+    </p-tabPanel>
+    <p-tabPanel header="Evenements validés">
+      <div *ngIf="validatedEvents.length === 0" style="text-align: center"><p>Il n'y a aucun événement validés.</p>
+      </div>
+      <div *ngFor="let event of validatedEvents">
+        <app-event [event]="event" (isEventsHasChanged)="initEvents()" [currentUser]="currentUser"></app-event>
+        <br/>
+      </div>
+    </p-tabPanel>
 
-  <p-tabPanel header="Refusés">
-    <div *ngIf="refusedEvents.length === 0" style="text-align: center"><p>Il n'y a aucun événement refusés.</p>
-    </div>
-    <div *ngFor="let event of refusedEvents">
-      <app-my-event [event]="event" (isEventsHasChanged)="initEvents()" [currentUser]="currentUser"></app-my-event>
-      <br/>
-    </div>
-  </p-tabPanel>
-</p-tabView>
-<!-- endregion-->
+    <p-tabPanel header="Evenements refusés">
+      <div *ngIf="refusedEvents.length === 0" style="text-align: center"><p>Il n'y a aucun événement refusés.</p>
+      </div>
+      <div *ngFor="let event of refusedEvents">
+        <app-event [event]="event" (isEventsHasChanged)="initEvents()" [currentUser]="currentUser"></app-event>
+        <br/>
+      </div>
+    </p-tabPanel>
+  </p-tabView>
+  <!-- endregion-->
+</div>

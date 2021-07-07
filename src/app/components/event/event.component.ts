@@ -11,7 +11,7 @@ import {ZoneService} from "../../../services/zone.service";
 import {DateUtils} from "../../../utils/DateUtils";
 
 @Component({
-  selector: 'app-my-event',
+  selector: 'app-event',
   templateUrl: './event.component.html',
   styleUrls: ['./event.component.css']
 })
@@ -21,20 +21,11 @@ export class EventComponent implements OnInit {
 
   @Input() currentUser: UserModel;
 
-  isUpdateEventClickedValue: boolean;
-
   visibleEvent: EventModel;
 
   currentTimestamp: MyDate;
 
   isEventDetailVisible = false;
-  eventParticipants: UserModel[];
-
-  eventCarpools: CarpoolModel[];
-  carpoolParticipants: UserModel[];
-
-  isCarpoolDetailVisible = false;
-  visibleCarpool: CarpoolModel;
 
   eventPictures: MediaModel[];
 
@@ -70,8 +61,6 @@ export class EventComponent implements OnInit {
   async onEventDetailClicked(event: EventModel): Promise<void> {
     this.isEventDetailVisible = true;
     this.visibleEvent = event;
-    this.eventParticipants = await this.getParticipantsOfEvent(event);
-    this.eventCarpools = await this.getCarpoolsOfEvent(event);
     this.eventPictures = [];
     this.eventPictures = await this.getPicturesOfEvent(event);
   }
@@ -102,13 +91,6 @@ export class EventComponent implements OnInit {
     });
   }
 
-  getCarpoolsOfEvent(event: EventModel): Promise<CarpoolModel[]> {
-    return this.carpoolService.getCarpoolsEvent(event.eventId)
-      .then(function (carpools) {
-        return carpools;
-      });
-  }
-
   getPicturesOfEvent(event: EventModel): Promise<MediaModel[]> {
     return this.zoneService.getPicturesZone(event.zone.zoneId)
       .then(function (pictures) {
@@ -116,32 +98,7 @@ export class EventComponent implements OnInit {
       });
   }
 
-  getParticipantsOfEvent(event: EventModel): Promise<UserModel[]> {
-    return this.eventService.getParticipantsEvents(event.eventId)
-      .then(function (users) {
-        return users;
-      });
-  }
-
-  getParticipantsOfCarpool(carpool: CarpoolModel): Promise<UserModel[]> {
-    return this.carpoolService.getCarpoolParticipants(carpool.carpoolId)
-      .then(function (users) {
-        return users;
-      });
-  }
-
-  async onCarpoolDetailClicked(carpool: CarpoolModel): Promise<void> {
-    this.isCarpoolDetailVisible = true;
-    this.visibleCarpool = carpool;
-    this.carpoolParticipants = await this.getParticipantsOfCarpool(carpool);
-  }
-
-  async isUpdateEventChange(event: boolean) {
-    this.isUpdateEventClickedValue = event;
-  }
-
   eventsHasChanged() {
     this.isEventsHasChanged.emit()
   }
-
 }

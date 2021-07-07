@@ -4,8 +4,6 @@ import {config} from "../config/pickthisup.config";
 import {HttpService} from "./http.service";
 import {ZoneModel} from "../models/zone.model";
 import {MediaModel} from "../models/media.model";
-import {PollutionLevel} from "../enum/pollution-level";
-import {status} from '../enum/status';
 
 @Injectable({
   providedIn: 'root'
@@ -19,53 +17,24 @@ export class ZoneService {
     return (await this.httpService.getAll<MediaModel>(config.URL + '/zone/get-pictures/' + zoneId));
   }
 
-  async getAvailableZones(): Promise<ZoneModel[]> {
-    return (await this.httpService.getAll<ZoneModel>(config.URL + '/zone/'));
+  async getValidatedZones(): Promise<ZoneModel[]> {
+    return (await this.httpService.getAll<ZoneModel>(config.URL + '/zone/getValidatedZones'));
   }
 
-  async getZonesByUser(): Promise<ZoneModel[]> {
-    return (await this.httpService.getAll<ZoneModel>(config.URL + '/zone/my-zones'));
+  async getWaitingZones(): Promise<ZoneModel[]> {
+    return (await this.httpService.getAll<ZoneModel>(config.URL + '/zone/getWaitingZones'));
   }
 
-  async getRefusedZonesByUser(): Promise<ZoneModel[]> {
-    return (await (await this.getZonesByUser()).filter((zone) => zone.statusId === status.refused));
+  async getRefusedZones(): Promise<ZoneModel[]> {
+    return (await this.httpService.getAll<ZoneModel>(config.URL + '/zone/getRefusedZones'));
   }
 
-  async getWaitingZonesByUser(): Promise<ZoneModel[]> {
-    return (await (await this.getZonesByUser()).filter((zone) => zone.statusId === status.waiting));
+  async acceptZone(zoneId: number): Promise<void> {
+    await this.httpService.put<void>(config.URL + '/zone/accept/' + zoneId);
   }
 
-  async getValidatedZonesByUser(): Promise<ZoneModel[]> {
-    return (await (await this.getZonesByUser()).filter((zone) => zone.statusId === status.validated));
-  }
-
-  async deleteZone(zoneId: number): Promise<boolean> {
-    return await this.httpService.delete<boolean>(config.URL + '/zone/delete/' + zoneId);
-  }
-
-  async signalZone(zone: ZoneModel): Promise<ZoneModel> {
-    let pollutionLevel: PollutionLevel;
-    if (zone['zonePollutionLevel'] as unknown as string === 'Faible') {
-      pollutionLevel = PollutionLevel.Low;
-    } else if (zone['zonePollutionLevel'] as unknown as string === 'Elevé') {
-      pollutionLevel = PollutionLevel.High;
-    } else {
-      pollutionLevel = PollutionLevel.Medium;
-    }
-    return (await this.httpService.post<ZoneModel>(config.URL + "/zone/add", {
-      street: zone['zoneStreet'],
-      zipcode: zone['zoneZipcode'],
-      city: zone['zoneCity'],
-      description: zone['zoneDescription'],
-      pollutionLevel: pollutionLevel
-    }));
-  }
-
-  async addPictureToZone(zoneId: number, mediaPath: string): Promise<MediaModel> {
-    return (await this.httpService.post<MediaModel>(config.URL + "/zone/add-picture", {
-      zoneId: zoneId,
-      path: mediaPath
-    }));
+  async refuseZone(zoneId: number): Promise<void> {
+    await this.httpService.put<void>(config.URL + '/zone/refuse/' + zoneId);
   }
 
 }
