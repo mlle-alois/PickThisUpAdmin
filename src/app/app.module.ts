@@ -29,7 +29,6 @@ import {DropdownModule} from "primeng/dropdown";
 import {ConfirmPopupModule} from "primeng/confirmpopup";
 import {ConfirmationService, MessageService} from "primeng/api";
 import {TabViewModule} from 'primeng/tabview';
-import { UpdateEventComponent } from './components/update-event/update-event.component';
 import {ProgressSpinnerModule} from "primeng/progressspinner";
 import {EventComponent} from "./components/event/event.component";
 
@@ -42,7 +41,6 @@ import {EventComponent} from "./components/event/event.component";
     MenuComponent,
     UsersComponent,
     ZonesComponent,
-    UpdateEventComponent,
     EventComponent
   ],
   imports: [
