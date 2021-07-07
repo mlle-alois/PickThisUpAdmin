@@ -76,21 +76,27 @@ export class EventComponent implements OnInit {
     this.eventPictures = await this.getPicturesOfEvent(event);
   }
 
-  async onEventUpdateClicked(event: EventModel): Promise<void> {
-    this.isUpdateEventClickedValue = true;
-    this.visibleEvent = event;
-    this.eventPictures = [];
-    this.eventPictures = await this.getPicturesOfEvent(event);
-  }
-
-  async onEventDeleteClicked(event: EventModel, e: Event): Promise<void> {
+  async onEventAcceptClicked(event: EventModel, e: Event): Promise<void> {
     this.confirmationService.confirm({
       target: e.target,
-      message: 'Voulez-vous vraiment supprimer cet événement ?',
-      icon: 'pi pi-users',
+      message: 'Voulez-vous vraiment accepter cet événement ?',
+      icon: 'pi pi-check',
       accept: async () => {
-        await this.eventService.deleteEvent(event.eventId);
-        this.messageService.add({severity: 'success', summary: 'Supprimé', detail: 'Suppression effectuée'});
+        await this.eventService.acceptEvent(event.eventId);
+        this.messageService.add({severity: 'success', summary: 'Accepté', detail: 'Evenement accepté'});
+        this.eventsHasChanged();
+      }
+    });
+  }
+
+  async onEventRefuseClicked(event: EventModel, e: Event): Promise<void> {
+    this.confirmationService.confirm({
+      target: e.target,
+      message: 'Voulez-vous vraiment refuser cet événement ?',
+      icon: 'pi pi-times',
+      accept: async () => {
+        await this.eventService.refuseEvent(event.eventId);
+        this.messageService.add({severity: 'success', summary: 'Refusé', detail: 'Evenement refusé'});
         this.eventsHasChanged();
       }
     });

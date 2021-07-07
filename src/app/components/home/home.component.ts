@@ -47,9 +47,11 @@ export class HomeComponent implements AfterViewInit, OnInit {
   }
 
   async initEvents() {
+    this.isLoadedData = false;
     this.validatedEvents = await this.eventService.getValidatedEvents();
     this.refusedEvents = await this.eventService.getRefusedEvents();
     this.waitingEvents = await this.eventService.getWaitingEvents();
+    this.isLoadedData = true;
   }
 
   initToken() {

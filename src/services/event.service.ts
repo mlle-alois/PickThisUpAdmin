@@ -18,16 +18,6 @@ export class EventService {
               private httpService: HttpService) {
   }
 
-  async getAvailableEvents(): Promise<EventModel[]> {
-    return (await this.httpService.getAll<EventModel>(config.URL + '/event'))
-      .map(function (event) {
-        event.dateHourStart = new MyDate(event.dateHourStart);
-        event.dateHourEnd = new MyDate(event.dateHourEnd);
-        event.dateHourCreation = new MyDate(event.dateHourCreation);
-        return event;
-    });
-  }
-
   async getParticipantsEvents(eventId: number): Promise<UserModel[]> {
     return await this.httpService.getAll<UserModel>(config.URL + '/event/getParticipants/' + eventId);
   }
@@ -94,8 +84,12 @@ export class EventService {
     return await this.httpService.deleteMultiRes<UserModel>(config.URL + '/event/unregister/' + eventId);
   }
 
-  async deleteEvent(eventId: number): Promise<boolean> {
-    return await this.httpService.delete<boolean>(config.URL + '/event/delete/' + eventId);
+  async acceptEvent(eventId: number): Promise<void> {
+    await this.httpService.put<void>(config.URL + '/event/accept/' + eventId);
+  }
+
+  async refuseEvent(eventId: number): Promise<void> {
+    await this.httpService.put<void>(config.URL + '/event/refuse/' + eventId);
   }
 
   async createEvent(event: EventModel, zone: ZoneModel): Promise<EventModel> {

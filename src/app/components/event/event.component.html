@@ -21,12 +21,12 @@
   <ng-template pTemplate="footer">
     <p-button label="Détails" icon="pi pi-plus" styleClass="p-button-warning"
               (click)="onEventDetailClicked(event)"></p-button>
-    <p-button label="Modifier" icon="pi pi-pencil" styleClass="p-button-secondary"
-              *ngIf="event.statusId === 5 && event.creatorId === currentUser.mail"
-              (click)="onEventUpdateClicked(event)"></p-button>
-    <p-button label="Supprimer" icon="pi pi-trash" styleClass="p-button-danger"
-              *ngIf="event.statusId === 5 && event.creatorId === currentUser.mail"
-              (click)="onEventDeleteClicked(event, $event)"></p-button>
+    <p-button label="Accepter" icon="pi pi-check" styleClass="p-button-success"
+              *ngIf="event.statusId === 5"
+              (click)="onEventAcceptClicked(event, $event)"></p-button>
+    <p-button label="Refuser" icon="pi pi-times" styleClass="p-button-danger"
+              *ngIf="event.statusId === 5"
+              (click)="onEventRefuseClicked(event, $event)"></p-button>
   </ng-template>
 </p-card>
 <!-- region Détails Event-->
@@ -34,88 +34,59 @@
           header="Détails de l'événement {{visibleEvent.eventTitle}}"
           [style]="{width: '60vw'}">
   <div>
-    <div>
-      <div style="float: left; width: 50%">
-        <h2>{{visibleEvent.eventTitle}}</h2>
-        <p>{{visibleEvent.eventDescription}}</p>
-        <p>Organisé par : <span class="bold-text">{{visibleEvent.creatorId}}</span></p>
-        <p style="font-size: 12px;">Créé le {{visibleEvent.dateHourCreation.toFrenchDate()}}</p>
-        <div>
-          <img src="assets/map-marker-alt-solid.svg" alt="" class="icon"/>
-          <p class="bold-text">
-            {{visibleEvent.zone.zoneStreet}} <br/>
-            {{visibleEvent.zone.zoneCity}} {{visibleEvent.zone.zoneZipcode}}<br/>
-            <span style="font-size: 11px">{{visibleEvent.zone.zoneDescription}}</span>
-          </p>
-        </div>
-        <p style="font-size: 12px;">Du <span
-          class="bold-text">{{visibleEvent.dateHourStart.toFrenchDate()}}</span><br/>
-          Jusqu'au <span class="bold-text">{{visibleEvent.dateHourStart.toFrenchDate()}}</span></p>
-        <div style="text-align: right"
-             *ngIf="visibleEvent.dateHourStart > currentTimestamp && visibleEvent.eventRemainingPlaces > 0">
-          <span class="bold-text">{{visibleEvent.eventRemainingPlaces}}</span>
-          <span *ngIf="visibleEvent.eventRemainingPlaces > 0"> places restantes</span>
-          <span *ngIf="visibleEvent.eventRemainingPlaces === 0"> place restante</span>
-        </div>
-
-        <h3>Participants</h3>
-        <p-table [value]="eventParticipants">
-          <ng-template pTemplate="body" let-participant>
-            <tr>
-              <td>{{participant.firstname}} {{participant.name}}
-                - {{participant.mail}}</td>
-            </tr>
-          </ng-template>
-        </p-table>
+    <div style="float: left; width: 50%">
+      <h2>{{visibleEvent.eventTitle}}</h2>
+      <p>{{visibleEvent.eventDescription}}</p>
+      <p>Organisé par : <span class="bold-text">{{visibleEvent.creatorId}}</span></p>
+      <p style="font-size: 12px;">Créé le {{visibleEvent.dateHourCreation.toFrenchDate()}}</p>
+      <div>
+        <img src="assets/map-marker-alt-solid.svg" alt="" class="icon"/>
+        <p class="bold-text">
+          {{visibleEvent.zone.zoneStreet}} <br/>
+          {{visibleEvent.zone.zoneCity}} {{visibleEvent.zone.zoneZipcode}}<br/>
+          <span style="font-size: 11px">{{visibleEvent.zone.zoneDescription}}</span>
+        </p>
       </div>
-      <div *ngIf="eventPictures && eventPictures.length > 0">
-        <p-galleria [value]="eventPictures" [responsiveOptions]="responsiveOptions"
-                    [containerStyle]="{'max-width': '100%'}"
-                    [numVisible]="5"
-                    [circular]="true" [showItemNavigators]="true">
-          <ng-template pTemplate="item" let-item>
-            <img src="assets/pictures/{{item.mediaPath}}" alt="{{visibleEvent.eventTitle}} image"
-                 style="width: 100%; display: block;"/>
-          </ng-template>
-          <ng-template pTemplate="thumbnail" let-item>
-            <div class="p-grid p-nogutter p-justify-center">
-              <img src="assets/pictures/{{item.mediaPath}}" alt="{{visibleEvent.eventTitle}} image"
-                   style="display: block;width: 45px"/>
-            </div>
-          </ng-template>
-        </p-galleria>
-      </div>
-      <div *ngIf="!eventPictures || eventPictures.length === 0" style="text-align: center">
-        <img alt="{{visibleEvent.eventTitle}} image" src="assets/pictures/{{visibleEvent.picture.mediaPath}}"
-             style="width: 40%;padding-left: 3%">
+      <p style="font-size: 12px;">Du <span
+        class="bold-text">{{visibleEvent.dateHourStart.toFrenchDate()}}</span><br/>
+        Jusqu'au <span class="bold-text">{{visibleEvent.dateHourStart.toFrenchDate()}}</span></p>
+      <div style="text-align: right"
+           *ngIf="visibleEvent.dateHourStart > currentTimestamp && visibleEvent.eventRemainingPlaces > 0">
+        <span class="bold-text">{{visibleEvent.eventRemainingPlaces}}</span>
+        <span *ngIf="visibleEvent.eventRemainingPlaces > 0"> places restantes</span>
+        <span *ngIf="visibleEvent.eventRemainingPlaces === 0"> place restante</span>
       </div>
     </div>
-    <h3>Covoiturages</h3>
-    <p-table [value]="eventCarpools">
-      <ng-template pTemplate="body" let-carpool>
-        <tr>
-          <td>Départ :
-            <span
-              class="bold-text">{{carpool.carpoolDepartureStreet}} {{carpool.carpoolDepartureZipcode}} {{carpool.carpoolDepartureCity}}</span>
-            - Conducteur : <span class="bold-text">{{carpool.conductorId}}</span> - <span
-              class="bold-text">{{carpool.carpoolRemainingPlaces}}</span>
-            <span *ngIf="carpool.carpoolRemainingPlaces > 0"> places restantes</span>
-            <span *ngIf="carpool.carpoolRemainingPlaces === 0"> place restante</span>
-            <p-button label="Détails" icon="pi pi-plus" styleClass="p-button-warning"
-                      (click)="onCarpoolDetailClicked(carpool)"></p-button>
-          </td>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="footer">
-        <p-button label="Modifier" icon="pi pi-pencil" styleClass="p-button-secondary"
-                  *ngIf="visibleEvent.statusId === 5"
-                  (click)="onEventUpdateClicked(visibleEvent)"></p-button>
-        <p-button label="Supprimer" icon="pi pi-trash" styleClass="p-button-danger"
-                  *ngIf="event.statusId === 5 && event.creatorId === currentUser.mail"
-                  (click)="onEventDeleteClicked(event, $event)"></p-button>
-      </ng-template>
-    </p-table>
+    <div *ngIf="eventPictures && eventPictures.length > 0">
+      <p-galleria [value]="eventPictures" [responsiveOptions]="responsiveOptions"
+                  [containerStyle]="{'max-width': '100%'}"
+                  [numVisible]="5"
+                  [circular]="true" [showItemNavigators]="true">
+        <ng-template pTemplate="item" let-item>
+          <img src="assets/pictures/{{item.mediaPath}}" alt="{{visibleEvent.eventTitle}} image"
+               style="width: 100%; display: block;"/>
+        </ng-template>
+        <ng-template pTemplate="thumbnail" let-item>
+          <div class="p-grid p-nogutter p-justify-center">
+            <img src="assets/pictures/{{item.mediaPath}}" alt="{{visibleEvent.eventTitle}} image"
+                 style="display: block;width: 45px"/>
+          </div>
+        </ng-template>
+      </p-galleria>
+    </div>
+    <div *ngIf="!eventPictures || eventPictures.length === 0" style="text-align: center">
+      <img alt="{{visibleEvent.eventTitle}} image" src="assets/pictures/{{visibleEvent.picture.mediaPath}}"
+           style="width: 40%;padding-left: 3%">
+    </div>
   </div>
+  <ng-template pTemplate="footer">
+    <p-button label="Accepter" icon="pi pi-check" styleClass="p-button-success"
+              *ngIf="event.statusId === 5"
+              (click)="onEventAcceptClicked(event, $event)"></p-button>
+    <p-button label="Refuser" icon="pi pi-times" styleClass="p-button-danger"
+              *ngIf="event.statusId === 5"
+              (click)="onEventRefuseClicked(event, $event)"></p-button>
+  </ng-template>
 </p-dialog>
 <!-- endregion-->
 
