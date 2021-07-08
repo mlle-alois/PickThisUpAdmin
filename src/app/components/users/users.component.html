@@ -2,110 +2,183 @@
 <p-progressSpinner *ngIf="!isLoadedData"></p-progressSpinner>
 
 <!-- region mon espace-->
-<div class="container" *ngIf="isLoadedData">
-  <div class="col-md-6 col-sm-6 ml-auto mr-auto margin-tp">
 
-    <h2>Mon espace</h2>
 
-    <div *ngIf="currentUser">
-      <p-card header="Mon compte"
-              styleClass="p-card-shadow">
-        <!--<img *ngIf="currentUser.profilePictureId" alt="{{currentUser.mail}} image"
-             src="assets/pictures/{{currentUser.profilePicture.mediaPath}}"
-             class="profile-picture">
-        <img *ngIf="!currentUser.profilePictureId" alt="{{currentUser.mail}} image" src="assets/pictures/user.png"
-             class="profile-picture">-->
-        <br/>
-        <p class="bold-text">Mail : {{currentUser.mail}}</p>
-        <p class="bold-text">Nom : {{currentUser.name}}</p>
-        <p class="bold-text">Prénom : {{currentUser.firstname}}</p>
-        <p class="bold-text">Numéro de téléphone : {{currentUser.phoneNumber}}</p>
-        <p class="bold-text">Type d'utilisateur : {{currentUser.type.userTypeLibelle}}</p>
-        <ng-template pTemplate="footer">
-          <p-button label="Modifier mes informations" icon="pi pi-pencil" styleClass="p-button-warning"
-                    (click)="onUpdateUserClicked()"></p-button>
-        </ng-template>
-      </p-card>
-      <br/>
-    </div>
+<div class="card" *ngIf="isLoadedData">
+  <p-table [value]="users">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>
+          <div class="p-d-flex p-jc-between p-ai-center">
+            Name
+            <p-columnFilter type="text" field="name" display="menu"></p-columnFilter>
+          </div>
+        </th>
+        <th>
+          <div class="p-d-flex p-jc-between p-ai-center">
+            Type
+            <p-columnFilter type="text" field="status" display="menu"></p-columnFilter>
+          </div>
+        </th>
+        <th>
+          <div class="p-d-flex p-jc-between p-ai-center">
+            Actions
+            <p-columnFilter type="text" field="actions" display="menu"></p-columnFilter>
+          </div>
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-user>
+      <tr>
+        <td>
+          {{user.name}} {{user.firstname}}
+        </td>
+        <td>
+          {{user.type.userTypeLibelle}}
+        </td>
+        <td>
+          <div class ="container">
+          <p-button label="Modifier" icon="pi pi-pencil" styleClass="p-button-warning"
+                    (click)="onUpdateUserClicked(user)"></p-button>
+          <div *ngIf="(user.typeId != 4); else Unblock">
+
+          <p-button label="Bloquer" icon="pi pi-ban" styleClass="p-button-secondary"
+                    (click)="onBlockUserClicked(user)"></p-button>
+          </div>
+          <ng-template #Unblock>
+            <p-button label="Debloquer" icon="pi pi-ban" styleClass="p-button-success"
+                      (click)="onUnBlockUserClicked(user)"></p-button>
+          </ng-template>
+          <p-button label="Droits" icon="pi pi-user-plus"
+                    (click)="onRightsUserClicked(user)"></p-button>
+          <p-button label="Supprimer" icon="pi pi-times" styleClass="p-button-danger"
+                    (click)="onDeleteUserClicked(user)"></p-button>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+
+  </p-table>
+
+  <!-- <div class="col-md-6 col-sm-6 ml-auto mr-auto margin-tp">
+
+     <h2>Mon espace</h2>
+     <div *ngIf="currentUser">
+       <p-card header="Mon compte"
+               styleClass="p-card-shadow">-->
+  <!--<img *ngIf="currentUser.profilePictureId" alt="{{currentUser.mail}} image"
+       src="assets/pictures/{{currentUser.profilePicture.mediaPath}}"
+       class="profile-picture">
+  <img *ngIf="!currentUser.profilePictureId" alt="{{currentUser.mail}} image" src="assets/pictures/user.png"
+       class="profile-picture">-->
+  <!--     <br/>
+      <p class="bold-text">Mail : {{currentUser.mail}}</p>
+      <p class="bold-text">Nom : {{currentUser.name}}</p>
+      <p class="bold-text">Prénom : {{currentUser.firstname}}</p>
+      <p class="bold-text">Numéro de téléphone : {{currentUser.phoneNumber}}</p>
+      <p class="bold-text">Type d'utilisateur : {{currentUser.type.userTypeLibelle}}</p>
+      <ng-template pTemplate="footer">
+        <p-button label="Modifier mes informations" icon="pi pi-pencil" styleClass="p-button-warning"
+                  (click)="onUpdateUserClicked()"></p-button>
+      </ng-template>
+    </p-card>
+    <br/>
   </div>
 </div>
-<!-- endregion-->
+</div>-->
+  <!-- endregion-->
 
-<!-- region modifier mes infos -->
-<p-dialog *ngIf="currentUser" [(visible)]="isUpdateUserClicked"
-          header="Modifier mes informations"
-          [style]="{width: '80vw'}">
-  <form [formGroup]="registerForm" (ngSubmit)="updateUserInfos()">
+  <!-- region modifier mes infos -->
+  <p-dialog *ngIf="currentUser" [(visible)]="isUpdateUserClicked"
+            header="Modifier mes informations"
+            [style]="{width: '80vw'}">
+    <form [formGroup]="registerForm" (ngSubmit)="updateUserInfos()">
 
-    <fieldset class="form-group">
-      <label>E-mail</label>
-      <input type="email" placeholder="Email" class="form-control" formControlName="email"
-             [(ngModel)]="currentUser.mail" disabled required>
-      <span
-        *ngIf="!registerForm.controls.email.valid && registerForm.controls.email.errors['required'] && registerForm.controls.email.touched"
-        class="help-block">Email obligatoire</span>
-      <span
-        *ngIf="!registerForm.controls.email.valid && registerForm.controls.email.errors['email'] && !registerForm.controls.email.errors['required'] && registerForm.controls.email.touched"
-        class="help-block">Veuillez entrer un email valide</span>
-    </fieldset>
+      <fieldset class="form-group">
+        <label>E-mail</label>
+        <input type="email" placeholder="Email" class="form-control" formControlName="email"
+               [(ngModel)]="currentUser.mail" disabled required>
+        <span
+          *ngIf="!registerForm.controls.email.valid && registerForm.controls.email.errors['required'] && registerForm.controls.email.touched"
+          class="help-block">Email obligatoire</span>
+        <span
+          *ngIf="!registerForm.controls.email.valid && registerForm.controls.email.errors['email'] && !registerForm.controls.email.errors['required'] && registerForm.controls.email.touched"
+          class="help-block">Veuillez entrer un email valide</span>
+      </fieldset>
 
-    <fieldset class="form-group">
-      <label>Nom</label>
-      <input type="text" placeholder="Nom" class="form-control" formControlName="fullName"
-             [(ngModel)]="currentUser.name" required>
-      <span
-        *ngIf="!registerForm.controls.fullName.valid && registerForm.controls.fullName.errors['required'] && registerForm.controls.fullName.touched"
-        class="help-block">Nom obligatoire</span>
-    </fieldset>
+      <fieldset class="form-group">
+        <label>Nom</label>
+        <input type="text" placeholder="Nom" class="form-control" formControlName="fullName"
+               [(ngModel)]="currentUser.name" required>
+        <span
+          *ngIf="!registerForm.controls.fullName.valid && registerForm.controls.fullName.errors['required'] && registerForm.controls.fullName.touched"
+          class="help-block">Nom obligatoire</span>
+      </fieldset>
 
-    <fieldset class="form-group">
-      <label>Prénom</label>
-      <input type="text" placeholder="Prénom" class="form-control" formControlName="firstName"
-             [(ngModel)]="currentUser.firstname" required>
-      <span
-        *ngIf="!registerForm.controls.firstName.valid && registerForm.controls.firstName.errors['required'] && registerForm.controls.firstName.touched"
-        class="help-block">Prénom obligatoire</span>
-    </fieldset>
+      <fieldset class="form-group">
+        <label>Prénom</label>
+        <input type="text" placeholder="Prénom" class="form-control" formControlName="firstName"
+               [(ngModel)]="currentUser.firstname" required>
+        <span
+          *ngIf="!registerForm.controls.firstName.valid && registerForm.controls.firstName.errors['required'] && registerForm.controls.firstName.touched"
+          class="help-block">Prénom obligatoire</span>
+      </fieldset>
 
-    <fieldset class="form-group">
-      <label>Mot de passe</label>
-      <input type="password" placeholder="Mot de passe" class="form-control" formControlName="password"
-             [(ngModel)]="currentUser.password"
-             (ngModelChange)="checkPasswordMatch($event)">
-      <span
-        *ngIf="!registerForm.controls.password.valid && registerForm.controls.password.errors['pattern'] && !registerForm.controls.password.errors['minlength']  && !registerForm.controls.password.errors['required']"
-        class="help-block">Veuillez entrer un mot de passe valide<br>
+      <fieldset class="form-group">
+        <label>Mot de passe</label>
+        <input type="password" placeholder="Mot de passe" class="form-control" formControlName="password"
+               [(ngModel)]="currentUser.password"
+               (ngModelChange)="checkPasswordMatch($event)">
+        <span
+          *ngIf="!registerForm.controls.password.valid && registerForm.controls.password.errors['pattern'] && !registerForm.controls.password.errors['minlength']  && !registerForm.controls.password.errors['required']"
+          class="help-block">Veuillez entrer un mot de passe valide<br>
                       <span class="help-block">
                         Le mot de passe doit avoir au moins 8 caractères dont 1 lettre minuscule, 1 lettre majuscule, 1 caractère spécial, et 1 nombre.
                       </span></span>
-    </fieldset>
+      </fieldset>
 
-    <fieldset class="form-group">
-      <label>Confirmation de mot de passe</label>
-      <input type="password" placeholder="Confirmation de mot de passe" class="form-control"
-             formControlName="confirmPassword" [(ngModel)]="confirmationPassword"
-             (ngModelChange)="checkConfirmPasswordMatch($event)">
-      <span class="help-block" *ngIf="!passwordMatched && currentUser.password.length > 0">Les mots de passe ne correspondent pas</span>
-    </fieldset>
+      <fieldset class="form-group">
+        <label>Confirmation de mot de passe</label>
+        <input type="password" placeholder="Confirmation de mot de passe" class="form-control"
+               formControlName="confirmPassword" [(ngModel)]="confirmationPassword"
+               (ngModelChange)="checkConfirmPasswordMatch($event)">
+        <span class="help-block" *ngIf="!passwordMatched && currentUser.password.length > 0">Les mots de passe ne correspondent pas</span>
+      </fieldset>
 
-    <fieldset class="form-group">
-      <label>Numéro de téléphone</label>
-      <input type="text" placeholder="Numéro de téléphone" class="form-control" formControlName="mobile" maxlength="10"
-             [(ngModel)]="currentUser.phoneNumber" required>
-      <span
-        *ngIf="!registerForm.controls.mobile.valid && registerForm.controls.mobile.errors['required'] && registerForm.controls.mobile.touched"
-        class="help-block">Numéro de téléphone obligatoire<br/></span>
-      <span
-        *ngIf="!registerForm.controls.mobile.valid && (!registerForm.controls.mobile.errors['minlength']  || !registerForm.controls.mobile.errors['required'] || !registerForm.controls.mobile.errors['pattern']) && registerForm.controls.mobile.touched"
-        class="help-block">Le numéro de téléphone doit contenir 10 digitaux et commencer par 0</span>
-    </fieldset>
+      <fieldset class="form-group">
+        <label>Numéro de téléphone</label>
+        <input type="text" placeholder="Numéro de téléphone" class="form-control" formControlName="mobile"
+               maxlength="10"
+               [(ngModel)]="currentUser.phoneNumber" required>
+        <span
+          *ngIf="!registerForm.controls.mobile.valid && registerForm.controls.mobile.errors['required'] && registerForm.controls.mobile.touched"
+          class="help-block">Numéro de téléphone obligatoire<br/></span>
+        <span
+          *ngIf="!registerForm.controls.mobile.valid && (!registerForm.controls.mobile.errors['minlength']  || !registerForm.controls.mobile.errors['required'] || !registerForm.controls.mobile.errors['pattern']) && registerForm.controls.mobile.touched"
+          class="help-block">Le numéro de téléphone doit contenir 10 digitaux et commencer par 0</span>
+      </fieldset>
 
-    <fieldset class="form-group">
-      <button pButton type="submit" label="Modifier mes informations" class="p-button-secondary"
-              [disabled]=!registerForm.valid></button>
-    </fieldset>
-    <p-progressSpinner *ngIf="!isUpdated"></p-progressSpinner>
-  </form>
-</p-dialog>
-<!-- endregion -->
+      <fieldset class="form-group">
+        <button pButton type="submit" label="Modifier mes informations" class="p-button-secondary"
+                [disabled]=!registerForm.valid></button>
+      </fieldset>
+      <p-progressSpinner *ngIf="!isUpdated"></p-progressSpinner>
+    </form>
+  </p-dialog>
+  <!-- endregion -->
+
+  <!-- Region Rights -->
+  <p-dialog *ngIf="currentUser" [(visible)]="isRightsUserClicked"
+            header="Modifier le Type"
+            [style]="{width: '80vw'}">
+    <p-listbox [options]="rightsLibelle" [(ngModel)]="selectedRights">
+
+    </p-listbox>
+    <div class="p-text-right">
+      <button pButton type="submit" label="Valider" class="p-button-secondary"
+              (click)="changeUserType(selectedRights)"></button>
+    </div>
+  </p-dialog>
+  >
+  <!-- endregion -->
+</div>
