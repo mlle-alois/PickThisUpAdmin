@@ -53,6 +53,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
     await this.initCurrentUser();
     this.isLoadedData = true;
     this.users = await this.userService.getAllUsers();
+    this.users = this.users.filter((user)=> {return user.name})
     this.users.forEach((user)=> user.password = "");
     this.rights = await this.userService.getAllUserTypes();
     this.rightsLibelle = this.rights.map((right) => right.userTypeLibelle)
