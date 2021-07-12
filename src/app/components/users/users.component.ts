@@ -1,11 +1,12 @@
-import {AfterViewInit, ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, OnInit, Output, EventEmitter} from '@angular/core';
 import {Router} from "@angular/router";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {MessageService} from "primeng/api";
+import {ConfirmationService, MessageService} from "primeng/api";
 import {UserModel} from "../../../models/user.model";
 import {AuthenticatedUserService} from "../../../services/authenticated-user.service";
 import {UserService} from "../../../services/user.service";
 import {UserTypeModel} from "../../../models/user-type.model";
+
 
 @Component({
   selector: 'app-my-space',
@@ -30,13 +31,15 @@ export class UsersComponent implements OnInit, AfterViewInit {
   isUpdated = true;
 
   isLoadedData: boolean;
+  @Output() isEventsHasChanged = new EventEmitter<void>();
 
   constructor(private router: Router,
               private authenticatedUserService: AuthenticatedUserService,
               private formBuilder: FormBuilder,
               private messageService: MessageService,
+              private confirmationService: ConfirmationService,
               private userService: UserService,
-  private changeDetectorRefs: ChangeDetectorRef) {
+              private changeDetectorRefs: ChangeDetectorRef) {
     this.registerForm = this.formBuilder.group({
         'fullName': ['', Validators.required],
         'firstName': ['', Validators.required],
@@ -53,8 +56,10 @@ export class UsersComponent implements OnInit, AfterViewInit {
     await this.initCurrentUser();
     this.isLoadedData = true;
     this.users = await this.userService.getAllUsers();
-    this.users = this.users.filter((user)=> {return user.name})
-    this.users.forEach((user)=> user.password = "");
+    this.users = this.users.filter((user) => {
+      return user.name
+    })
+    this.users.forEach((user) => user.password = "");
     this.rights = await this.userService.getAllUserTypes();
     this.rightsLibelle = this.rights.map((right) => right.userTypeLibelle)
   }
@@ -64,7 +69,8 @@ export class UsersComponent implements OnInit, AfterViewInit {
       this.authenticatedUserService.redirectToAuthentication();
     }
   }
-  refresh(){
+
+  refresh() {
     this.changeDetectorRefs.detectChanges();
   }
 
@@ -90,6 +96,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
       return userTypeTemp.userTypeLibelle === this._utilisateurBloqué;
     });
     await this.updateUserAndRefreshScreen(newUserType);
+    this.messageService.add({severity: 'success', summary: 'Bloqué', detail: "L'utilisateur a bien été bloqué ! "});
     this.isBlockedUserClicked = true;
   }
 
@@ -101,13 +108,26 @@ export class UsersComponent implements OnInit, AfterViewInit {
       return userTypeTemp.userTypeLibelle === this._utilisateur;
     });
     await this.updateUserAndRefreshScreen(newUserType);
+    this.messageService.add({severity: 'success', summary: 'Bloqué', detail: "L'utilisateur a bien été débloqué ! "});
     this.isBlockedUserClicked = true;
   }
 
-  async onDeleteUserClicked(user: UserModel) {
-    this.currentUser = user;
-    await this.userService.deleteUserByMail(this.currentUser.mail);
-    this.users = await this.userService.getAllUsers();
+  async onDeleteUserClicked(user: UserModel, e: Event): Promise<void> {
+    this.confirmationService.confirm({
+      target: e.target,
+      message: 'Voulez-vous vraiment supprimer cet utilisateur ?',
+      icon: 'pi pi-trash',
+      accept: async () => {
+        this.currentUser = user;
+        console.log(user);
+        await this.userService.deleteUserByMail(this.currentUser.mail);
+        this.messageService.add({severity: 'success', summary: 'Supprimé', detail: 'Suppression effectuée'});
+        this.users = await this.userService.getAllUsers();
+        this.eventsHasChanged();
+      }
+    });
+
+
   }
 
   private async updateUserAndRefreshScreen(newUserType: UserTypeModel[]) {
@@ -128,6 +148,8 @@ export class UsersComponent implements OnInit, AfterViewInit {
       return userTypeTemp.userTypeLibelle === userType;
     });
     await this.updateUserAndRefreshScreen(newUserType);
+    this.isRightsUserClicked = false;
+    this.messageService.add({severity: 'success', summary: 'Modifié', detail: "les droits de l'utilisateur ont été modifiés"});
   }
 
   checkPasswordMatch(password) {
@@ -152,5 +174,9 @@ export class UsersComponent implements OnInit, AfterViewInit {
     this.isUpdated = true;
     this.isUpdateUserClicked = false;
     this.authenticatedUserService.loadCurrentUser();
+  }
+
+  eventsHasChanged() {
+    this.isEventsHasChanged.emit()
   }
 }
