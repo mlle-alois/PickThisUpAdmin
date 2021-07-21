@@ -31,7 +31,6 @@ export class UsersComponent implements OnInit, AfterViewInit {
   isUpdated = true;
 
   isLoadedData: boolean;
-  @Output() isEventsHasChanged = new EventEmitter<void>();
 
   constructor(private router: Router,
               private authenticatedUserService: AuthenticatedUserService,
@@ -54,7 +53,6 @@ export class UsersComponent implements OnInit, AfterViewInit {
   async ngOnInit() {
     this.initToken();
     await this.initCurrentUser();
-    this.isLoadedData = true;
     this.users = await this.userService.getAllUsers();
     this.users = this.users.filter((user) => {
       return user.name
@@ -62,6 +60,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
     this.users.forEach((user) => user.password = "");
     this.rights = await this.userService.getAllUserTypes();
     this.rightsLibelle = this.rights.map((right) => right.userTypeLibelle)
+    this.isLoadedData = true;
   }
 
   async ngAfterViewInit() {
@@ -119,11 +118,9 @@ export class UsersComponent implements OnInit, AfterViewInit {
       icon: 'pi pi-trash',
       accept: async () => {
         this.currentUser = user;
-        console.log(user);
         await this.userService.deleteUserByMail(this.currentUser.mail);
         this.messageService.add({severity: 'success', summary: 'Supprimé', detail: 'Suppression effectuée'});
         this.users = await this.userService.getAllUsers();
-        this.eventsHasChanged();
       }
     });
 
@@ -176,7 +173,4 @@ export class UsersComponent implements OnInit, AfterViewInit {
     this.authenticatedUserService.loadCurrentUser();
   }
 
-  eventsHasChanged() {
-    this.isEventsHasChanged.emit()
-  }
 }
