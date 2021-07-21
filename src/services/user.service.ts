@@ -17,7 +17,7 @@ export class UserService {
               private httpService: HttpService) { }
 
   async updateUser(user: UserModel): Promise<UserModel> {
-    return (await this.httpService.put<UserModel>(config.URL + "/user/update/" + user['mail'], {
+    return (await this.httpService.put<UserModel>(config.URL + "/user/update/" + user['email'], {
       password: user['password'],
       name: user['fullName'],
       firstname: user['firstName'],
